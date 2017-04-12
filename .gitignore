@@ -5,6 +5,7 @@
 .classpath
 .settings/
 .project
+/src/**/*/Config.java
 
 # sbt specific
 .cache
