@@ -1,6 +1,11 @@
 *.class
 *.log
 
+# Java
+.classpath
+.settings/
+.project
+
 # sbt specific
 .cache
 .history
