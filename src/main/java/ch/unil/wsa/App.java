@@ -1,4 +1,4 @@
-package ch.unil.wsa.Wsa;
+package ch.unil.wsa;
 
 import java.io.PrintWriter;
 import java.net.URI;
@@ -28,15 +28,8 @@ public class App extends Configured implements Tool {
 	public static final String tokenSecret = Config.TOKEN_SECRET;
 
     public static void main( String[] args ) throws Exception {
-    	
-    	
-    	
-		try {
-			App engine1 = new App();
-			engine1.run(args);
-		} catch (InterruptedException e) {
-			System.out.println(e);
-		}
+    	App app = new App();
+    	app.run(args);
     }
 	
 	public int run(String[] args) throws Exception {
@@ -46,11 +39,7 @@ public class App extends Configured implements Tool {
 		StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
 
 		endpoint.languages(Lists.newArrayList("fr"));
-
-		//add some track terms
-		//endpoint.trackTerms(Lists.newArrayList("#Presidentielle2017", "#Présidentielle2017", "#Election2017", "#election2017", "#Cheminade", "de"));
-		
-		endpoint.trackTerms(Lists.newArrayList("de","je","il","que","le","la","et", "mon", "tu", "nous", "dans", "du", "t'", "d'", "ils", "ma", "pour", "les", "en", "dans","@PhilippePoutou","@jeanlassalle","@MLP_officiel","@EmmanuelMacron","@JLMelenchon‏","@benoithamon ","@n_arthaud ","@JCheminade","@FrancoisFillon","@dupontaignan","@UPR_Asselineau"));
+		endpoint.trackTerms(Terms.all());
 		
 		Authentication auth = new OAuth1(consumer, consumerSecret, token, tokenSecret);
 		// Authentication auth = new BasicAuth(username, password);
@@ -61,6 +50,7 @@ public class App extends Configured implements Tool {
 
 		// Establish a connection
 		client.connect();
+		
 		try {
 			System.setProperty("HADOOP_USER_NAME", "hduser");
 			DateTimeFormatter date = DateTimeFormatter.ofPattern("YYYY-MM-dd_hh-mm-ss");
@@ -72,8 +62,8 @@ public class App extends Configured implements Tool {
 					System.out.println("dFS is initialized");
 				}
 			};
-					final FSDataOutputStream streamWriter = dFS.create(path);
-					final PrintWriter writer = new PrintWriter(streamWriter, true );) {
+			final FSDataOutputStream streamWriter = dFS.create(path);
+			final PrintWriter writer = new PrintWriter(streamWriter, true );) {
 				System.out.println("Writer is instanciated.");
 				int j = 0;
 				while (true) {
@@ -85,12 +75,13 @@ public class App extends Configured implements Tool {
 					}
 					streamWriter.hflush();
 				j++;
+				
 				System.out.println(j + "00 messages received.");
 				}
 
 			}
 		} finally {
 			client.stop();
-		} 
+		}
 	}
 }
