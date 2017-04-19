@@ -21,16 +21,11 @@ import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 
 public class App extends Configured implements Tool {
-	public static final String FS_PARAM_NAME = "fs.defaultFS";
-	public static final String consumer = Config.CONSUMER;
-	public static final String consumerSecret = Config.CONSUMER_SECRET;
-	public static final String token = Config.TOKEN;
-	public static final String tokenSecret = Config.TOKEN_SECRET;
-
-    public static void main( String[] args ) throws Exception {
-    	App app = new App();
-    	app.run(args);
-    }
+	private static final String FS_PARAM_NAME = "fs.defaultFS";
+	private static final String consumer = Config.CONSUMER;
+	private static final String consumerSecret = Config.CONSUMER_SECRET;
+	private static final String token = Config.TOKEN;
+	private static final String tokenSecret = Config.TOKEN_SECRET;
 	
 	public int run(String[] args) throws Exception {
 		// public static void run(String consumerKey, String consumerSecret,
@@ -67,10 +62,12 @@ public class App extends Configured implements Tool {
 				System.out.println("Writer is instanciated.");
 				int j = 0;
 				while (true) {
-					for(int i = 0; i<=100 ;++i){
+					for(int i = 0; i<100 ;++i){
+					//System.out.println("The size of the queue is : " + queue.size());
 					String msg = queue.take();
 					//System.out.println(msg);
-					writer.println(msg);
+					//writer.println(msg);
+					writer.write(msg);
 					writer.flush();
 					}
 					streamWriter.hflush();
@@ -80,8 +77,18 @@ public class App extends Configured implements Tool {
 				}
 
 			}
-		} finally {
+		} catch (Exception e) {
 			client.stop();
+			this.run(args);
 		}
+		return 0;
 	}
+    public static void main( String[] args ) throws Exception {
+    	try{
+	    	App app = new App();
+	    	app.run(args);
+    	}catch(Exception e){
+    		e.getStackTrace();
+    	}
+    }
 }
